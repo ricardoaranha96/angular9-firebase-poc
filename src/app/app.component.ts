@@ -41,25 +41,16 @@ export class AppComponent {
   firebaseLoginGoogle(){
     this.auth.signInWithPopup(new firebase.auth.GoogleAuthProvider())
       .then(firebaseUser => {
-        this.loginWithFirebaseUser(firebaseUser);
-        firebaseUser.user.uid
-        firebaseUser.user.email        
+        this.loginWithFirebaseUser();         
       });
   }
 
-  loginWithFirebaseUser(firebaseUser){
+  async loginWithFirebaseUser(){
+    let authUser = await this.auth.currentUser;    
+    let idToken = await authUser.getIdToken();
     let requestBody = {
-      firebase_uid: firebaseUser.user.uid,
-      user_providers: [
-        {
-          provider: firebaseUser.additionalUserInfo.providerId
-        }
-      ]
-    };
-    /*firebaseUser.user.email
-    console.log(firebaseUser.user.displayName)
-    console.log(firebaseUser.additionalUserInfo.providerId);
-    console.log(firebaseUser.user.uid);*/
+      id_token: idToken      
+    };    
     let headers = new Headers();
     headers.append("Content-Type", "application/json");
     headers.append("Accept", "application/json");
